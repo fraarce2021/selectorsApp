@@ -16,13 +16,32 @@
     </div>
 
     <!-- Country Selector -->
-    <div class="row mb-3">
+    <div class="row mb-3" *ngIf="countries.length !==0">
         <div class="col">
             <label class="form-label">Country:</label>
             <select formControlName="country" class="form-control">
             <option value=""> -- Select Continent -- </option>
             <option *ngFor="let country of countries;" [value]="country.alpha3Code | lowercase">{{country.name}}</option>
           </select>
+        </div>
+    </div>
+
+    <!-- Frontiers Selector -->
+    <div class="row mb-3" *ngIf="frontiers.length > 0">
+        <div class="col">
+            <label class="form-label">Frontier:</label>
+            <select formControlName="frontier" class="form-control">
+              <option value=""> -- Select Frontier -- </option>
+              <option *ngFor="let frontier of frontiers;" [value]="frontier.alpha3Code">{{frontier.name}}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="load">
+        <div class="col">
+            <div class="alert alert-primary">
+                Loading...
+            </div>
         </div>
     </div>
 

@@ -15,12 +15,18 @@ export class SelectorPageComponent implements OnInit {
 
   myForm:FormGroup = this.fb.group({
     region: ['', Validators.required],
-    country: ['', Validators.required]
+    country: ['', Validators.required],
+    frontier: ['', Validators.required]
   });
 
   //load selectors
   regions:string[]=[];
   countries:CountrySmall[]=[];
+  // frontiers:string[]=[];
+  frontiers:CountrySmall[]=[];
+
+  //Ui
+  load:boolean=false;
 
 
   constructor(private fb:FormBuilder, private countriesService:CountriesService) { }
@@ -40,12 +46,32 @@ export class SelectorPageComponent implements OnInit {
     .pipe(
       tap( (_) => {
         this.myForm.get('country')?.reset('');
+        this.load = true;
       }),
       switchMap(region=>this.countriesService.getCountriesByRegion(region))
     )
     .subscribe(countries=> {
       this.countries = countries;
+      this.load = false;
+    });
+
+    this.myForm.get('country')?.valueChanges
+    .pipe(
+      tap(()=>{
+        this.myForm.get('frontier')?.reset('');
+        this.load = true;
+      }),
+      switchMap( code => this.countriesService.getCountryByCode(code)),
+      switchMap( country => this.countriesService.getCountriesByCodes(country?.borders!) )
+    )
+    .subscribe((countries)=>{
+      // this.frontiers = country?.borders || [];
+      console.log(countries)
+      this.frontiers = countries;
+      this.load = false;
     })
+
+
   }
 
   save(){
